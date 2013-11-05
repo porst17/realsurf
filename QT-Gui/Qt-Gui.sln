@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Qt-Gui", "Qt-Gui.vcproj", "{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QT2D-Slider", "QT2D-Slider.vcproj", "{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release (static)|Win32 = Release (static)|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}.Debug|Win32.Build.0 = Debug|Win32
+		{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}.Release (static)|Win32.ActiveCfg = Release (static)|Win32
+		{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}.Release (static)|Win32.Build.0 = Release (static)|Win32
+		{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}.Release|Win32.ActiveCfg = Release|Win32
+		{445D4C07-FA3A-493C-B4DF-F6A32FDEE3A3}.Release|Win32.Build.0 = Release|Win32
+		{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}.Debug|Win32.Build.0 = Debug|Win32
+		{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}.Release (static)|Win32.ActiveCfg = Release|Win32
+		{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}.Release (static)|Win32.Build.0 = Release|Win32
+		{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}.Release|Win32.ActiveCfg = Release|Win32
+		{C8E74EC7-ED42-4E4F-A4CE-76DD4228205E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

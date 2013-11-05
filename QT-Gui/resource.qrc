@@ -1,0 +1,43 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>resources/about.png</file>
+        <file>resources/bounding_object_off.png</file>
+        <file>resources/cube_clipping.png</file>
+        <file>resources/help.html</file>
+        <file>resources/help.png</file>
+        <file>resources/logo.png</file>
+        <file>resources/placeholder.png</file>
+        <file>resources/reset_light.png</file>
+        <file>resources/reset_transform.png</file>
+        <file>resources/screenshot.png</file>
+        <file>resources/sphere_clipping.png</file>
+        <file>resources/surfaces/0005 Sphere.png</file>
+        <file>resources/surfaces/0010 Paraboloids.png</file>
+        <file>resources/surfaces/0020 Hyperboloids.png</file>
+        <file>resources/surfaces/0040 Deformation of Cayley Cubic.png</file>
+        <file>resources/surfaces/0050 Clebsch Cubic.png</file>
+        <file>resources/surfaces/0060 A Cayley Cubic.png</file>
+        <file>resources/surfaces/0070 Whitney Umbrella.png</file>
+        <file>resources/surfaces/0080 Hollow Cube.png</file>
+        <file>resources/surfaces/0090 Ding Dong.png</file>
+        <file>resources/surfaces/0100 Blob.png</file>
+        <file>resources/surfaces/0110 Octdong.png</file>
+        <file>resources/surfaces/0120 Deformation of Torus.png</file>
+        <file>resources/surfaces/0130 Steiner Surface.png</file>
+        <file>resources/surfaces/0140 A Kummer Surface.png</file>
+        <file>resources/surfaces/0150 Quartic Surfaces.png</file>
+        <file>resources/surfaces/0152 Tetrahedral Surface.png</file>
+        <file>resources/surfaces/0153 Chubs Surface.png</file>
+        <file>resources/surfaces/0155 Boy's Surface.png</file>
+        <file>resources/surfaces/0157 Cassini Surface.png</file>
+        <file>resources/surfaces/0160 Rounded Cube.png</file>
+        <file>resources/surfaces/0170 Klein Bottle.png</file>
+        <file>resources/surfaces/0180 Barth's Sextic.png</file>
+        <file>resources/surfaces/0190 The Heart Surface.png</file>
+        <file>resources/surfaces/0200 Enzensberger Star.png</file>
+        <file>resources/surfaces/0210 Horned Cube.png</file>
+        <file>resources/surfaces/0220 Double Torus.png</file>
+        <file>resources/surfaces/0225 Octic with 168 singular points.png</file>
+        <file>resources/surfaces/0230 Barth's Decic.png</file>
+    </qresource>
+</RCC>

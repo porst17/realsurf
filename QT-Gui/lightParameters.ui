@@ -1,0 +1,472 @@
+<ui version="4.0" >
+ <class>lightParameters</class>
+ <widget class="QWidget" name="lightParameters" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>285</width>
+    <height>284</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip" >
+      <string>Allows setting of parameters of a light source. A light may also be disabled.</string>
+     </property>
+     <property name="title" >
+      <string>enabled</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="ColorPicker" name="ambient" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the ambient color of the light source.</string>
+          </property>
+          <property name="text" >
+           <string> Ambient</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="ColorPicker" name="diffuse" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the diffuse color of the light source.</string>
+          </property>
+          <property name="text" >
+           <string> Diffuse</string>
+          </property>
+          <property name="checkable" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="ColorPicker" name="specular" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the ambient specular of the light source.</string>
+          </property>
+          <property name="text" >
+           <string> Specular</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="3" column="0" colspan="2" >
+         <widget class="QLabel" name="label_3" >
+          <property name="toolTip" >
+           <string>Set the cutoff angle of the spot of the light source. This value must lie between 0.0 and 90.0. The special value 180.0 means, that this light has no spot (i.e. point light).</string>
+          </property>
+          <property name="text" >
+           <string>Spot Cutoff Angle:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="3" >
+         <widget class="QDoubleSpinBox" name="spotCutoff" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the cutoff angle of the spot of the light source. This value must lie between 0.0 and 90.0. The special value 180.0 means, that this light has no spot (i.e. point light).</string>
+          </property>
+          <property name="maximum" >
+           <double>180.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.500000000000000</double>
+          </property>
+          <property name="value" >
+           <double>180.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="label_2" >
+          <property name="toolTip" >
+           <string>Set the direction of the spot of the light source.</string>
+          </property>
+          <property name="text" >
+           <string>Spot Direction:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="label_1" >
+          <property name="toolTip" >
+           <string>Set the position of the light source.</string>
+          </property>
+          <property name="text" >
+           <string>Position:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="3" >
+         <widget class="QDoubleSpinBox" name="spotCutoffExponent" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the cutoff exponent of the spot of the light source. This value specifies the intensity distribution of the light.</string>
+          </property>
+          <property name="maximum" >
+           <double>128.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2" >
+         <widget class="QDoubleSpinBox" name="spotDirY" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the y direction of the spot of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.050000000000000</double>
+          </property>
+          <property name="value" >
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2" >
+         <widget class="QDoubleSpinBox" name="linearAttenuation" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the linear attenuation of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3" >
+         <widget class="QDoubleSpinBox" name="posZ" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the z position of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.050000000000000</double>
+          </property>
+          <property name="value" >
+           <double>-1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_5" >
+          <property name="toolTip" >
+           <string>Set the attenuation of the light source.</string>
+          </property>
+          <property name="text" >
+           <string>Attenuation:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3" >
+         <widget class="QDoubleSpinBox" name="quadraticAttenuation" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the quadratic attenuation of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QDoubleSpinBox" name="constantAttenuation" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the contant attenuation of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.500000000000000</double>
+          </property>
+          <property name="value" >
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <widget class="QDoubleSpinBox" name="spotDirX" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the x direction of the spot of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.050000000000000</double>
+          </property>
+          <property name="value" >
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" >
+         <widget class="QDoubleSpinBox" name="posY" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the y position of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.050000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2" >
+         <widget class="QLabel" name="label_4" >
+          <property name="toolTip" >
+           <string>Set the cutoff exponent of the spot of the light source. This value specifies the intensity distribution of the light.</string>
+          </property>
+          <property name="text" >
+           <string>Spot Cutoff Exponent: </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3" >
+         <widget class="QDoubleSpinBox" name="spotDirZ" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the z direction of the spot of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.050000000000000</double>
+          </property>
+          <property name="value" >
+           <double>-1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" >
+         <widget class="QDoubleSpinBox" name="posX" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip" >
+           <string>Set the x position of the light source.</string>
+          </property>
+          <property name="maximum" >
+           <double>100.000000000000000</double>
+          </property>
+          <property name="minimum" >
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.050000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ColorPicker</class>
+   <extends>QPushButton</extends>
+   <header>ColorPicker.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

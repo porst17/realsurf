@@ -1,0 +1,45 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: mathglpp - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "Z:\RSPb41d.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"Debug/mathglpp.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"G:\progs\mathgl-pp\src\libmathglpp\GLBernsteinPolynomial.cpp"
+"G:\progs\mathgl-pp\src\libmathglpp\GLMatrix.cpp"
+"G:\progs\mathgl-pp\src\libmathglpp\GLVector.cpp"
+]
+Creating command line "cl.exe @Z:\RSPb41d.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Debug\mathglpp.lib"  ".\Debug\GLBernsteinPolynomial.obj" ".\Debug\GLMatrix.obj" ".\Debug\GLVector.obj" "
+<h3>Output Window</h3>
+Compiling...
+GLBernsteinPolynomial.cpp
+c:\program files\microsoft visual studio\vc98\include\vector(39) : warning C4786: 'std::reverse_iterator<std::vector<unsigned int,std::allocator<unsigned int> > const *,std::vector<unsigned int,std::allocator<unsigned int> >,std::vector<unsigned int,std::allocator<unsigned int> > const &,std::vector<unsigned int,std::allocator<unsigned int> > const *,int>' : identifier was truncated to '255' characters in the debug information
+        c:\program files\microsoft visual studio\vc98\include\vector(39) : while compiling class-template member function '__thiscall std::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >::std::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >(const std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > &)'
+c:\program files\microsoft visual studio\vc98\include\vector(39) : warning C4786: 'std::reverse_iterator<std::vector<unsigned int,std::allocator<unsigned int> > *,std::vector<unsigned int,std::allocator<unsigned int> >,std::vector<unsigned int,std::allocator<unsigned int> > &,std::vector<unsigned int,std::allocator<unsigned int> > *,int>' : identifier was truncated to '255' characters in the debug information
+        c:\program files\microsoft visual studio\vc98\include\vector(39) : while compiling class-template member function '__thiscall std::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >::std::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >(const std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > &)'
+GLMatrix.cpp
+c:\program files\microsoft visual studio\vc98\include\vector(39) : warning C4786: 'std::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >' : identifier was truncated to '255' characters in the debug information
+c:\program files\microsoft visual studio\vc98\include\vector(60) : warning C4786: 'std::vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >::~vector<std::vector<unsigned int,std::allocator<unsigned int> >,std::allocator<std::vector<unsigned int,std::allocator<unsigned int> > > >' : identifier was truncated to '255' characters in the debug information
+g:\progs\mathgl-pp\src\libmathglpp\glmatrix.cpp(133) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+g:\progs\mathgl-pp\src\libmathglpp\glmatrix.cpp(137) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+g:\progs\mathgl-pp\src\libmathglpp\glmatrix.cpp(138) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+GLVector.cpp
+g:\progs\mathgl-pp\src\libmathglpp\glvector.cpp(42) : warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+g:\progs\mathgl-pp\src\libmathglpp\glvector.cpp(42) : warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+g:\progs\mathgl-pp\src\libmathglpp\glvector.cpp(168) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+g:\progs\mathgl-pp\src\libmathglpp\glvector.cpp(188) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+g:\progs\mathgl-pp\src\libmathglpp\glvector.cpp(262) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+Creating library...
+
+
+
+<h3>Results</h3>
+mathglpp.lib - 0 error(s), 12 warning(s)
+</pre>
+</body>
+</html>

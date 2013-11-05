@@ -1,0 +1,375 @@
+<ui version="4.0" >
+ <class>miscellaneous</class>
+ <widget class="QWidget" name="miscellaneous" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>260</width>
+    <height>462</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="label_10" >
+     <property name="text" >
+      <string>Algorithms:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="polyCoeffMethod" >
+     <property name="toolTip" >
+      <string>Method for calculation of polynomial coefficients.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="rootFinderMethod" >
+     <property name="toolTip" >
+      <string>Method for calculation of polynomial roots.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_4" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="8" column="0" >
+      <widget class="QToolButton" name="resetLightConfig" >
+       <property name="toolTip" >
+        <string>Reset all lights to the default values.</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/reset_light.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1" >
+      <widget class="QLabel" name="label_7" >
+       <property name="text" >
+        <string>About</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" >
+      <widget class="QToolButton" name="clipToCube" >
+       <property name="toolTip" >
+        <string>Clip the algebraic surface to a cube.</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/cube_clipping.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" >
+      <widget class="QToolButton" name="showHideBoundingObject" >
+       <property name="focusPolicy" >
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Show or hide the mesh of the object, which is used to clip the surface (i.e. cube or sphere).</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/bounding_object_off.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" >
+      <widget class="QToolButton" name="resetSurfaceTransformation" >
+       <property name="toolTip" >
+        <string>Reset the translation, rotation and scale of the surface to it's defaults.</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/reset_transform.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" >
+      <widget class="QToolButton" name="screenshot" >
+       <property name="focusPolicy" >
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="toolTip" >
+        <string>Make a screenshot und save it as a PNG file.</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/screenshot.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="checkable" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLabel" name="label_8" >
+       <property name="text" >
+        <string>Background color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1" >
+      <widget class="QLabel" name="label_4" >
+       <property name="text" >
+        <string>Reset surface transformation (R)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0" >
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>75</width>
+         <height>16</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="0" colspan="2" >
+      <widget class="Line" name="line_3" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" >
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Clip surface to sphere (C)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" >
+      <widget class="QToolButton" name="clipToSphere" >
+       <property name="toolTip" >
+        <string>Clip the algebraic surface to a sphere.</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/sphere_clipping.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" >
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Clip surface to cube (C)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="ColorPicker" name="bgColor" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>43</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>43</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="toolTip" >
+        <string>Choose the background color of the surface render area.</string>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" >
+      <widget class="QLabel" name="label_3" >
+       <property name="text" >
+        <string>Show/Hide bounding object (B)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="2" >
+      <widget class="Line" name="line_2" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2" >
+      <widget class="Line" name="line" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0" >
+      <widget class="QToolButton" name="about" >
+       <property name="toolTip" >
+        <string>About RealSurf and the author.</string>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="resource.qrc" >:/resources/about.png</iconset>
+       </property>
+       <property name="iconSize" >
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QLabel" name="label_9" >
+       <property name="text" >
+        <string>Save screenshot (F6)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1" >
+      <widget class="QLabel" name="label_5" >
+       <property name="text" >
+        <string>Reset light configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1" >
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>159</width>
+         <height>16</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ColorPicker</class>
+   <extends>QPushButton</extends>
+   <header>ColorPicker.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resource.qrc" />
+ </resources>
+ <connections/>
+</ui>

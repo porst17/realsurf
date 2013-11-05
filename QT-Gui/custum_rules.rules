@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="Custom Build Rules"
+	Version="8,00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="UI"
+			DisplayName="Compile Qt User Interface File (*.ui)"
+			CommandLine="uic.exe &quot;$(InputPath)&quot; -o ui_$(InputName).h"
+			Outputs="ui_$(InputName).h"
+			FileExtensions="*.ui"
+			ExecutionDescription="Creating File ui\_\$(InputName).h"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="MOC"
+			DisplayName="Qt Meta Object Compiler"
+			CommandLine="moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+			Outputs="$(InputDir)moc_$(InputName).cpp"
+			FileExtensions="*.lalala"
+			ExecutionDescription="Performing moc on $(InputPath)"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+		<CustomBuildRule
+			Name="RCC"
+			DisplayName="Qt Resource Compiler"
+			CommandLine="rcc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;"
+			Outputs="$(InputDir)$(InputName).cpp"
+			FileExtensions="*.qrc"
+			ExecutionDescription="Performing rcc on $(InputPath)"
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

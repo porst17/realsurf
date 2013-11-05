@@ -1,0 +1,153 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<meta name="qrichtext" content="1" />
+<style type="text/css">
+p, li { white-space: pre-wrap; }
+body, td { text-indent:0px; font-family:helvetica; font-size:8.25pt; font-weight:400; font-style:normal; text-decoration:none; }
+</style>
+</head>
+<body>
+<h1><a name="introduction">Introduction</a></h1>
+<p>
+RealSurf is a tool for realtime visualization of algebraic surfaces. 
+Algebraic surfaces are defined as the zero sets of polynomials. 
+Here we deal with surfaces in the three variables x, y and z.
+</p>
+<p>
+RealSurf utilizes the OpenGL Shading Language to render the surfaces with realtime performance on <a href="#sys_req">suitable graphics cards</a>. 
+So it is possible to rotate, move and scale the rendered object with your mouse, set lighting and material parameters and even vary surface parameters. 
+All changes show up immediately!
+</p>
+This help will give an overview of the handling of RealSurf without going into too much detail. 
+<h1>Contents</h1>
+<ul>
+<li><a href="#surface_description">Surface description</a></li>
+<li><a href="#interaction">Interaction</a>
+<ul>
+<li><a href="#render">The render widget</a></li>
+<li><a href="#param">Setting surface parameters</a></li>
+<li><a href="#light_mat">Changing lights and materials</a></li>
+<li><a href="#misc">Miscellaneous tasks</a></li></ul>
+</li>
+<li><a href="#store_load">Storing and loading surfaces</a></li>
+<li><a href="#sys_req">System requirements</a></li>
+</ul>
+<h1><a name="surface_description">Surface description</a></h1>
+<p>
+In order to display a surface you must specify its formula. This formula is, of course, a polynomial. 
+</p>
+<p>
+A polynomial expression may consist of the variables <code>'x'</code>, <code>'y'</code> and <code>'z'</code>, surface parameters and constants, 
+which all can be added, subtracted, negated and multiplied by using the operators <code>'+'</code>, <code>'-'</code> and <code>'*'</code>. 
+A polynomial can be also constructed by raising a polynomial to an integer power, e.g. <code>(1+x)^3</code>. 
+As you see in this example, you can also put subexpressions into parenthesis. 
+</p>
+<p>
+On parameters and constants you can do more operations as on polynomials itself. 
+You can divide them with <code>'/'</code>, which is not allowed on polynomials. 
+So, <code>x/3+y/t</code> is allowed, because <code>3</code> is a constant and <code>t</code> is a surface parameter. 
+Clearly <code>x/y</code> is forbidden. 
+</p>
+<p>
+Here is a list of functions you can apply to surfaces parameters and constants:
+<br />
+<table border="0" align="center">
+<tr><td><code>sin(t)</code></td><td>&nbsp;</td><td>sine of <code>t</code></td></tr>
+<tr><td><code>cos(t)</code></td><td></td><td>cosine of <code>t</code></td></tr>
+<tr><td><code>tan(t)</code></td><td></td><td>tangent of <code>t</code></td></tr>
+<tr><td><code>asin(t)</code></td><td></td><td>arc sine of <code>t</code> for <code>t</code>&isin;[-1,+1]</td></tr>
+<tr><td><code>acos(t)</code></td><td></td><td>arc cosine of <code>t</code> for <code>t</code>&isin;[-1,+1]</td></tr>
+<tr><td><code>atan(t)</code></td><td></td><td>arc tangent of <code>t</code> for <code>t</code>&isin;[-&pi;/2,+&pi;/2]</td></tr>
+<tr><td><code>atan(t1,t2)</code></td><td></td><td>arc tangent with quadrant calculation of <code>t1/t2</code> for <code>t1/t2</code>&isin;[-&pi;,+&pi;]</td></tr>
+<tr><td><code>exp(t)</code></td><td></td><td>euler number raised to the power of <code>t</code></td></tr>
+<tr><td><code>log(t)</code></td><td></td><td>natural logarithm of <code>t</code></td></tr>
+<tr><td><code>sqrt(t)</code></td><td></td><td>square root of <code>t</code></td></tr>
+<tr><td><code>pow(base,exponent)</code></td><td></td><td><code>base</code> raised to the power <code>exponent</code></td></tr>
+<tr><td><code>ceil(t)</code></td><td></td><td>smallest integral value not less than <code>t</code></td></tr>
+<tr><td><code>floor(t)</code></td><td></td><td>largest integral value not greater than <code>t</code></td></tr>
+<tr><td><code>abs(t)</code></td><td></td><td>absolut value of <code>t</code></td></tr>
+<tr><td><code>sign(t)</code></td><td></td><td>sign of <code>t</code>, meaning -1, 0, +1</td></tr>
+</table>
+<br />
+For values, which are not in the specified intervals, the result is undefined. 
+All operations are done with single precision floating point numbers, so be aware of rounding errors, overflows and underflows. 
+</p>
+<p>
+What remains, is to define constants and surface parameters. A constant is any number in the usual floating point notation, e.g. 100.2345, 1.00234e2, 100234e-3, 1, 2 and so on. 
+Additionally there are two predefined constants:
+<br />
+<table border="0" align="center">
+<tr><td><code>PI</code></td><td>&nbsp;</td><td>3.1415926535897932</td></tr>
+<tr><td><code>E</code></td><td></td><td>2.7182818284590452</code></td></tr>
+</table>
+<br />
+A surface parameter is any variable except <code>'x'</code>, <code>'y'</code>, <code>'z'</code>, <code>'X'</code>, <code>'Y'</code>, <code>'Z'</code>, <code>'PI'</code> and <code>'E'</code>. 
+The parameter must begin with a letter (<code>[a-zA-Z]</code>) and end with a digit (<code>[0-9]</code>) or a letter. 
+Inside the name letters, digits and the underscore <code>_</code> are allowed. 
+</p>
+<p>
+That's it. Now you should be able to express any algebraic surface you like. Type it into the equation editor, press return and enjoy :-). 
+</p>
+<h1><a name="interaction">Interaction</a></h1>
+The following section describes how to interact with the application using your mouse and keyboard.
+<h2><a name="render">The render widget</a></h2>
+The render widget displays the suface corresponding to the formula you entered into the equation editor. 
+You can rotate the surface by dragging the mouse while pressing the left mouse button and move the surface by dragging the mouse while pressing the right mouse button. 
+To scale the surface you can use your mousewheel or the keys <code>'+'</code> and <code>'-'</code>.
+<h2><a name="param">Setting surface parameters</a></h2>
+If your surface equation contains parameters, they will appear in the parameter tab as soon as the parsing progess is complete. 
+You can set minimum and maximum values for each parameter and then vary the actual value by dragging the slider. 
+Exact values can be set by typing them into the value spin box. 
+<h2><a name="light_mat">Changing lights and materials</a></h2>
+<p>
+RealSurf uses the phong based lighting model according to the OpenGL Specification 2.0. 
+Lots of guides concerning OpenGL lighting can be found int the Internet. 
+<a href="http://www.falloutsoftware.com/tutorials/gl/gl8.htm">This tutorial</a> is a good explanation of the lighting and material parameters. 
+</p>
+<p>
+Sometimes it is difficult to find nice material parameters. For this reason some predefined matarials are available in the pull-down-menu. The default light configuration is suitable in most cases.
+</p>
+<p>
+To you want to explore the  self intersections of a surface, you can use transparency effects. You explicitly need to enable transparencies due to the computation overhead these effects produce.
+It is not a good idea to always enable transparencies, but not to use them. 
+The rendering speed is independent of the actual transparency value, but differs between enabled and disabled transparency effects.
+</p>
+<p>
+Transparent surfaces often look a bit unnatural. 
+Due to the fact that we treat only infinitely thin surfaces and not solid objects, we cannot associate a thickness with the object. 
+The surfaces are now like infinitely thin colored glass objects, which do not exist in reality and hence must look a bit "unnatural".
+</p>
+<h2><a name="misc">Miscellaneous tasks</a></h2>
+The buttons in the materials and miscellaneous tab should be self explaining. 
+Most of them have shortcut keys like these:
+<br />
+<table border="0" align="center">
+<tr><td><code>F1</code></td><td>&nbsp;</td><td>this help</td></tr>
+<tr><td><code>F6</code></td><td></td><td>save screenshot</td></tr>
+<tr><td><code>F11</code></td><td></td><td>toggle fullscreen mode</td></tr>
+<tr><td><code>F12</code></td><td></td><td>toggle tab widget and equation editor</td></tr>
+<tr><td><code>ESC</code></td><td></td><td>reset window to normal mode (i.e. undo F11 and F12)</td></tr>
+<tr><td><code>F</code></td><td></td><td>toggle display of <u>f</u>rames per second</td></tr>
+<tr><td><code>C</code></td><td></td><td>change <u>c</u>lipping object</td></tr>
+<tr><td><code>B</code></td><td></td><td>show/hide <u>b</u>ounding object</td></tr>
+<tr><td><code>R</code></td><td></td><td><u>r</u>eset surface transformation</td></tr>
+<tr><td><code>S</code></td><td></td><td><u>s</u>wap front and back material</td></tr>
+</table>
+<h1><a name="store_load">Storing and loading surfaces</a></h1>
+The 'Saved Surfaces' tab allows you to load and store surfaces. 
+Some predefined surfaces are build in. You can select them here. 
+If you want the application to load user defined surfaces at startup, you must store them in the 'surfaces' directory in the application path.
+<h1><a name="sys_req">System requirements</a></h1>
+The current system requirements are: 
+<br />
+<ul>
+<li>Microsoft Windows 2000/XP (possibly 95, 98, ME or Vista)</li>
+<li>NVidia Geforce or Quadro GPU with Shader Model 3 support</li>
+<li>newest NVidia graphics driver</li>
+<li>no actual requirements to underlying CPU :-)</li>
+<li>512 MB RAM (NVidia driver needs a lot of memory when compiling the GLSL shaders)</li>
+</ul>
+Support for other operating systems and graphics cards is work in progress. At the moment the follwoing graphics cards were tested: NVidia GeForce 6600 GT, 6800 GT, 7600 GS and NVidia Quadro FX 4000.
+</body>
+</html>

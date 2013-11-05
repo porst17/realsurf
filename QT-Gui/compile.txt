@@ -1,0 +1,8 @@
+// use moc: echo the necessary commands:
+find . -name "moc*.cpp" | cut -b 7- | sed "s/.cpp//g" | xargs -I {} echo "moc {}.h > moc_{}.cpp"
+
+// Compile everything
+g++ !(*main-qt-2d-slider).cpp ../RealSurf/Expression.cpp ../RealSurf/Parser.cpp ../RealSurf/ShaderManager.cpp MathGL/GLMatrix.cpp -I /usr/include/qt4/QtGui -I /usr/include/qt4/ -I /usr/include/qt4/QtOpenGL -I /usr/include/qt4/QtCore -I . -I ./MathGL -lGL -lGLU -lQtCore -lQtGui -lQtOpenGL -lGLee -o RealSurf && ./RealSurf
+
+// Compile only SurfaceRenderWidget and build RealSurf using prebuild .o files of remaining source code
+g++ SurfaceRenderWidget.cpp -c -I /usr/include/qt4/QtGui -I /usr/include/qt4/ -I /usr/include/qt4/QtOpenGL -I /usr/include/qt4/QtCore -I . -I ./MathGL && g++ *.o -lGL -lGLU -lQtCore -lQtGui -lQtOpenGL -lGLee -o RealSurf

@@ -1,0 +1,673 @@
+#define MAX_LIGHTS 3
+
+uniform mat4 surface_transform_inverse;
+uniform mat4 surface_transform;
+
+uniform int clip_to;
+
+varying vec3 eye_space_eye;
+varying vec3 eye_space_dir;
+varying vec3 surface_space_eye;
+varying vec3 surface_space_dir;
+varying vec3 clipping_space_eye;
+varying vec3 clipping_space_dir;
+
+vec3 ese_opt, esd_opt, cse_opt, csd_opt, sse_opt, ssd_opt;
+
+polynomial calc_coefficients( vec3 eye, vec3 dir );
+vec3 gradient( vec3 p );
+
+#define CLIP_TO_SPHERE 1
+#define CLIP_TO_CUBE 2
+
+polynomial create_poly_0( float a0 )
+{
+	polynomial res;
+	for( int i = 1; i <= DEGREE; i++ )
+		res.a[ i ] = 0.0;
+	res.a[ 0 ] = a0;
+	return res;
+}
+
+polynomial create_poly_1( float a0, float a1 )
+{
+	polynomial res;
+#if DEGREE > 1
+	for( int i = 2; i <= DEGREE; i++ )
+		res.a[ i ] = 0.0;
+#endif
+	res.a[ 0 ] = a0;
+	res.a[ 1 ] = a1;
+	return res;
+}
+
+polynomial add( polynomial p1, polynomial p2, int res_degree )
+{
+	for( int i = 0; i <= res_degree; i++ )
+		p1.a[ i ] += p2.a[ i ];
+	return p1;
+}
+
+polynomial sub( polynomial p1, polynomial p2, int res_degree )
+{
+	for( int i = 0; i <= res_degree; i++ )
+		/* works with this line: */ // p1.a[ i ] = -( p2.a[ i ] - p1.a[ i ] );
+		p1.a[ i ] = p1.a[ i ] - p2.a[ i ];
+		
+	return p1;
+}
+
+polynomial mult( polynomial p1, polynomial p2, int res_degree )
+{
+	polynomial res = p1;
+	for( int i = 0; i <= res_degree; i++ )
+	{
+		res.a[ i ] = 0.0;
+		for( int j = 0; j <= i; j++ )
+			res.a[ i ] += p1.a[ j ] * p2.a[ i - j ];
+	}
+	return res;
+}
+
+polynomial neg( polynomial p, int res_degree )
+{
+	for( int i = 0; i <= res_degree; i++ )
+		p.a[ i ] = -p.a[ i ];
+	return p;
+}
+/*
+// in Theorie schneller .. in Praxis bei kleinen Potenzen nicht ;-)
+// beruht auf Idee: a^n = (a^(n/2))^2
+polynomial power( polynomial p, int exp, int degree )
+{
+	polynomial result = create_poly_0( 1.0 );
+
+	if( exp != 0 )
+	{
+		polynomial y = p;
+		int n = exp;
+		int m = exp;
+		for( int i = 0; i < int( log2( float( exp ) ) ); i++ )
+		{
+			m = m / 2;
+			degree = degree + degree;
+			if( n > 2 * m )
+				result = mult( result, y, degree );
+			y = mult( y, y, degree );
+			n = m;
+		}
+		result = mult( result, y, degree );
+	}
+	return result;
+}
+*/
+polynomial power( polynomial p, int exp, int degree )
+{
+	polynomial res = create_poly_0( 1.0 );
+	for( int res_degree = degree; res_degree < degree * exp + 1; res_degree += degree )
+		res = mult( res, p, res_degree );
+	return res;
+}
+
+polynomial power_1( polynomial p, int exp )
+{
+//	return power( p, exp, 1 );
+
+	// compute powers of p.a[ 0 ] and p.a[ 1 ]
+	float a0 = p.a[ 0 ];
+	float a1 = p.a[ 1 ];
+	float powers_0[ SIZE ];
+	float powers_1[ SIZE ];
+	powers_0[ 0 ] = 1.0;
+	powers_0[ 1 ] = a0;
+	powers_1[ 0 ] = 1.0;
+	powers_1[ 1 ] = a1;
+	for( int i = 2; i <= exp; i++ )
+	{
+		powers_0[ i ] = powers_0[ i - 1 ] * a0;
+		powers_1[ i ] = powers_1[ i - 1 ] * a1;
+	}
+	
+	// compute coefficients of polynomials by binomial expansion
+	polynomial res = create_poly_0( 0.0 );
+	int a1_exp = exp;
+	int a0_exp = 0;
+	int bin_coeff = 1;
+	for( int deg = exp; deg >= 0; deg-- )
+	{
+		res.a[ deg ] = float( bin_coeff ) * powers_1[ a1_exp ] * powers_0[ a0_exp ];
+		a0_exp++;
+		bin_coeff = ( bin_coeff * a1_exp ) / a0_exp;
+		a1_exp--;
+	}
+	return res;
+}
+
+// Ersatz für fehlerhafte NVidia-pow-Funktion ...
+float power( float base, int exp )
+{
+	float res = 1.0;
+	for( int i = 0; i < exp; i++ )
+		res *= base;
+	return res;
+}
+
+/**
+ * methods, that operate with that algebraic function
+ */
+#extension GL_EXT_gpu_shader4 : enable
+float epsilon = 0.0001;
+struct roots
+{
+	float x[ DEGREE + 2 ];
+	bool valid[ DEGREE + 2 ];
+};
+
+float eval_p( polynomial p, float x )
+{
+	float fx = p.a[ SIZE - 1 ];
+	for( int i = SIZE - 2; i >= 0; i-- )
+		fx = fx * x + p.a[ i ];
+	return fx;
+}
+
+float bisect( polynomial p, float lowerBound, float upperBound )
+{
+	float center = lowerBound;
+	float old_center = upperBound;
+	float fl = eval_p( p, lowerBound );
+	float fu = eval_p( p, upperBound );
+
+	while( abs( upperBound - lowerBound ) > epsilon )
+	{
+		old_center = center;
+		center = 0.5 * ( lowerBound + upperBound );
+		float fc = eval_p( p, center );
+		
+		if( fc * fl < 0.0 )
+		{
+			upperBound = center;
+			fu = fc;
+		}
+		else if( fc == 0.0 )
+		{
+			break;
+		}
+		else
+		{
+			lowerBound = center;
+			fl = fc;
+		}
+	}
+	return ( upperBound + lowerBound ) * 0.5;
+}
+
+polynomial stretch( polynomial p, float scale )
+{
+	polynomial result;
+	float multiplier = pow( scale, -0.5 * float( DEGREE ) );
+	for( int i = 0; i < SIZE; i++ )
+	{
+		result.a[ i ] = multiplier * p.a[ i ];
+		multiplier *= scale;
+	}
+	return result;
+}
+
+polynomial shift( polynomial p, float shift )
+{
+	polynomial result;
+	for( int i = 0; i < SIZE; i++ )
+		result.a[ i ] = p.a[ i ];
+	for( int i = 1; i <= SIZE; i++ )
+		for( int j = SIZE - 2; j >= i - 1; j-- )
+			result.a[ j ] = result.a[ j ] + shift * result.a[ j + 1 ];    
+	return result;
+}
+
+polynomial bernstein( polynomial p )
+{
+    int[ SIZE ] bin;
+    for( int i = 0; i < bin.length() - 1; i++ )
+    {
+        bin[ i ] = 1;
+        for( int j = i - 1; j >= 0; j-- )
+            bin[ j + 1 ] = bin[ j ] + bin[ j + 1 ];
+    }
+    bin[ bin.length() - 1 ] = 1;
+    
+    polynomial result;
+    for( int i = 0; i < p.a.length(); i++ )
+        result.a[ i ] = p.a[ i ] / float( bin[ i ] );
+    for( int i = 1; i < p.a.length(); i++ )
+        for( int j = p.a.length() - 1; j >= i; j-- )
+            result.a[ j ] = result.a[ j - 1 ] + result.a[ j ];
+    return result;
+}
+/*
+float findSmallestPositveRootBelow( const in polynomial p, const float upperBound, inout polynomial tmp )
+{
+	if( shiftStretchDescartesRuleOfSignReverseShift1( p, 0.0, upperBound, tmp ) > 0 )
+	{
+		float size = 0.5;
+		int id = 0;
+		while( size < 1.0 )
+		{
+			float scale = upperBound * size;
+			int v = shiftStretchDescartesRuleOfSignReverseShift1( p, scale * float( id ), scale, tmp );
+			
+			if( v > 1 )
+			{
+				// go deeper on left side
+				id *= 2;
+				size /= 2.0;
+			}
+			else if( v == 0 )
+			{
+				// go right
+				while( id % 2 == 1 )
+				{
+					id /= 2;
+					size *= 2.0;
+				}
+				id++;
+			}
+			else if( v == 1 )
+			{
+				return bisect( p, scale * float( id ), scale * float( id + 1 ) );
+			}
+			else
+			{
+				return scale * float( id );
+			}
+		}
+	}
+	return upperBound + 1.0;
+}
+*/
+
+int countSignChanges( const polynomial p )
+{
+    int signChanges = 0;
+    
+    float lastNonZeroCoeff = 0.0;
+    for( int i = 1; i <= p.a.length(); i++ )
+    {
+        if( p.a[ i - 1 ] != 0.0 )
+        {
+            if( p.a[ i - 1 ] * lastNonZeroCoeff < 0.0 )
+                signChanges++;
+            if( signChanges > 1 )
+                return signChanges;
+            lastNonZeroCoeff = p.a[ i - 1 ];
+        }
+    }
+    
+    return signChanges;
+}
+/*
+polynomial deCastelauLeft( polynomial p, const float a )
+{
+    for( int i = 1; i < p.a.length(); i++ )
+        for( int j = p.a.length() - 1; j >= i; j-- )
+            p.a[ j ] = p.a[ j - 1 ] * ( 1.0 - a ) + p.a[ j ] * a;
+    return p;
+}
+
+polynomial deCastelauRight( polynomial p, const float b )
+{
+    polynomial result;
+    result.a[ p.a.length() - 1 ] = p.a[ p.a.length() - 1 ];
+    for( int i = 1; i < p.a.length(); i++ )
+    {
+        for( int j = p.a.length() - 1; j >= i; j-- )
+            p.a[ j ] = p.a[ j - 1 ] * ( 1.0 - b ) + p.a[ j ] * b;
+        result.a[ p.a.length() - 1 - i ] = p.a[ p.a.length() - 1 ];
+    }
+    return result;
+}
+
+polynomial deCastelauLeftRight2( polynomial p, const float a, const float b )
+{
+    return deCastelauRight( deCastelauLeft( p, b ), a / b );
+}
+*/
+
+void deCastelauLeftRight( const polynomial p, const float a, const float b, inout polynomial tmp )
+{
+    for( int i = p.a.length() - 1; i >= 0; i-- )
+    {
+        tmp.a[ p.a.length() - 1 - i ] = p.a[ i ];
+        for( int j = i + 1; j < p.a.length(); j++ )
+            tmp.a[ p.a.length() - 1 - j ] = tmp.a[ p.a.length() - 1 - ( j - 1 ) ] + ( tmp.a[ p.a.length() - 1 - j ] - tmp.a[ p.a.length() - 1 - ( j - 1 ) ] ) * b;
+    }
+
+    const float scaled_a = 1.0 - a / b;
+    for( int i = 1; i < p.a.length(); i++ )
+        for( int j = p.a.length() - 1; j >= i; j-- )
+            tmp.a[ j ] = tmp.a[ j - 1 ] + ( tmp.a[ j ] - tmp.a[ j - 1 ] ) * scaled_a;
+}
+
+int countSignChangesIn( const polynomial p, float a, float b, inout polynomial tmp )
+{
+    deCastelauLeftRight( p, a, b, tmp );
+    return countSignChanges( tmp );
+}
+
+float findFirstRootIn01( const in polynomial p )
+{
+    polynomial tmp;
+    polynomial bp = bernstein( p );
+	if( countSignChanges( bp ) > 0 )
+	{
+		float size = 0.5;
+		int id = 0;
+		while( size < 1.0 )
+		{
+			float scale = size;
+			int v = countSignChangesIn( bp, scale * float( id ), scale * float( id + 1 ), tmp );
+			
+			if( v > 1 )
+			{
+				// go deeper on left side
+				id *= 2;
+				size /= 2.0;
+			}
+			else if( v == 0 )
+			{
+				// go right
+				while( id % 2 == 1 )
+				{
+					id /= 2;
+					size *= 2.0;
+				}
+				id++;
+			}
+			else if( v == 1 )
+			{
+				return bisect( p, scale * float( id ), scale * float( id + 1 ) );
+			}
+			else
+			{
+				return scale * float( id );
+			}
+		}
+	}
+	return -1.0;
+}
+
+
+float findFirstRootIn( polynomial p, float lowerBound, float upperBound )
+{
+    return findFirstRootIn01( stretch( shift( p, lowerBound ), upperBound - lowerBound ) ) * ( upperBound - lowerBound ) + lowerBound;
+}
+
+roots solve( const in polynomial p, const in vec2 trace_interval )
+{
+	float intervalSize = trace_interval[ 1 ] - trace_interval[ 0 ];
+	
+	// init result array
+	roots res;
+	res.x[ 0 ] = trace_interval[ 0 ];
+	res.valid[ 0 ] = false;
+	for( int i = 1; i < DEGREE + 2; i++ )
+	{
+		res.x[ i ] = trace_interval[ 1 ];
+		res.valid[ i ] = false;
+	}
+
+	res.x[ 1 ] = findFirstRootIn( p, trace_interval[ 0 ], trace_interval[ 1 ] );
+	if( res.x[ 1 ] >= trace_interval[ 0 ] && res.x[ 1 ] <= trace_interval[ 1 ] )
+		res.valid[ 1 ] = true;
+	
+	return res;
+}
+
+// all coordinates have to be in eye space!
+// vectors have to be normalized
+vec4 illuminate_one( vec3 eye_pos, vec3 hit_pos, vec3 n, gl_MaterialParameters material, gl_LightSourceParameters light, gl_LightProducts product )
+{
+	vec3 vp = normalize( light.position.xyz - hit_pos );
+	float vp_length = length( light.position.xyz - hit_pos );
+	vec3 h = normalize( vp + normalize( eye_pos - hit_pos ) );
+	
+	float pv_sdli = dot( -vp, normalize( light.spotDirection ) );
+	vec2 mix_cond = vec2(	float( light.position.w == 0.0 ),		// attenuation
+							float( light.spotCutoff == 180.0 ) );	// spot
+	vec2 mix_vec_a = vec2(	1.0 / ( light.constantAttenuation + ( light.linearAttenuation + light.quadraticAttenuation * vp_length ) * vp_length ),	// attenuation
+							pow( pv_sdli, light.spotExponent ) );																						// spot
+	vec2 mix_vec_b = vec2(	1.0,	// attenuation
+							1.0 );	// spot
+	vec2 mixed_vec = mix( mix_vec_a, mix_vec_b, mix_cond );
+	
+	float att = mixed_vec[ 0 ];
+	float spot = mixed_vec[ 1 ] * float( pv_sdli >= light.spotCosCutoff );
+	float f = float( dot( n, vp ) != 0.0 );
+	
+	return att * spot * (	product.ambient + // ambient
+							dot( n, vp ) * product.diffuse + // diffuse
+							+ f * pow( max( 0.0, dot( n, h ) ), material.shininess ) * product.specular ); // specular
+}
+
+vec4 illuminate( vec3 hit_pos, vec3 n )
+{
+	vec3 eye_pos = vec3( 0.0 );
+	bool use_front_material = dot( n, eye_pos - hit_pos ) <= 0.0;
+	gl_MaterialParameters material;
+	vec4 color;
+	if( use_front_material )
+	{
+		material = gl_FrontMaterial;
+		color = gl_FrontLightModelProduct.sceneColor;
+		n = -n;
+	}
+	else
+	{
+		material = gl_BackMaterial;
+		color = gl_BackLightModelProduct.sceneColor;
+	}
+	
+	gl_LightSourceParameters light;
+	gl_LightProducts product;
+	for( int i = 0; i < MAX_LIGHTS; i++ )
+	{
+		light = gl_LightSource[ i ];
+		if( use_front_material ) product = gl_FrontLightProduct[ i ]; else product = gl_BackLightProduct[ i ];
+		color += mix( vec4( 0.0 ), illuminate_one( eye_pos, hit_pos, n, material, light, product ), float( light.ambient.a != 0.0 ) );
+	}
+
+	color.a = material.diffuse.a;
+
+	return color;
+}
+
+float z_buffer_depth( vec3 p )
+{
+	vec4 proj_p = gl_ProjectionMatrix * vec4( p, 1.0 );
+	float a = gl_DepthRange.far / gl_DepthRange.diff;
+	float b = gl_DepthRange.far * gl_DepthRange.near / ( - gl_DepthRange.diff );
+	return ( proj_p.z / proj_p.w ) * 0.5 + 0.5 ;
+}
+
+void process( roots r, vec3 eye, vec3 dir )
+{
+	bool any_valid = false;
+	float first_root = 0.0;
+#ifdef USE_TRANSPARENCY	
+	if( gl_FrontMaterial.diffuse.a == 1.0 && gl_BackMaterial.diffuse.a == 1.0 )
+	{
+#endif
+		// just process the first hit (the other hits can't be seen anyway)
+		for( int i = 1; i < DEGREE + 2 - 1; i++ )
+		{
+			// assign to first_root if, and only if a valid root comes along and there was no valid root before (=first valid root)
+			first_root = mix( first_root, r.x[ i ], float( r.valid[ i ] && !any_valid ) );
+			any_valid = any_valid || r.valid[ i ];
+		}
+		
+		if( any_valid )
+		{
+			// illuminate point of first root
+			vec3 first_hit = eye + first_root * dir;
+			vec3 eye_space_normal = normalize( ( gl_ModelViewMatrix * surface_transform * vec4( gradient( sse_opt + first_root * ssd_opt ), 0.0 ) ).xyz );
+			gl_FragColor = illuminate( ese_opt + first_root * esd_opt, eye_space_normal );
+#ifndef USE_TRANSPARENCY
+			gl_FragColor.a = 1.0;
+#endif			
+			gl_FragDepth = z_buffer_depth( first_hit );			
+		}
+		else
+			// surface not hit - discard the pixel
+			discard;
+#ifdef USE_TRANSPARENCY	
+	}
+	else
+	{
+		// process all hits with this surface
+		gl_FragColor = vec4( 0.0 );
+		vec3 first_hit = vec3( 0.0 );
+		for( int i = DEGREE + 2 - 2; i >= 1; i-- )
+		{
+			if( r.valid[ i ] )
+			{
+				// this is a valid hit
+				any_valid = true;
+				first_root = r.x[ i ];
+				first_hit = eye + first_root * dir;
+				
+				vec3 eye_space_normal = normalize( ( gl_ModelViewMatrix * surface_transform * vec4( gradient( sse_opt + first_root * ssd_opt ), 0.0 ) ).xyz );
+				vec4 new_color = illuminate( ese_opt + first_root * esd_opt, eye_space_normal );
+				gl_FragColor.rgb = min( vec3( 1.0 ), ( 1.0 - new_color.a ) * gl_FragColor.rgb + new_color.a * new_color.rgb );
+				gl_FragColor.a = ( 1.0 - new_color.a ) * gl_FragColor.a + new_color.a;
+
+			}
+		}
+		
+		if( any_valid )
+		{
+			// calculate pseudo depth value of first root
+			gl_FragDepth = z_buffer_depth( first_hit );
+		}
+		else
+			// surface not hit - discard the pixel
+			discard;
+	}
+#endif
+}
+
+vec2 clip( vec3 o, vec3 d )
+{
+	float l = length( d );
+	d = d / l;
+
+	vec2 res;
+	if( clip_to == CLIP_TO_SPHERE )
+	{
+		// solve algebraic
+		float B = dot( o, d );
+		float C = dot( o, o ) - 1.0;
+		float D = B * B - C;
+		
+		if( D < 0.0 )
+			discard;
+		
+		res = vec2( -B - sqrt( D ), -B + sqrt( D ) );
+	}
+	else if( clip_to == CLIP_TO_CUBE )
+	{
+		// liang-barsky
+		vec3 plane[ 6 ]; // use value as normal AND point on plane
+		plane[ 0 ] = vec3( 1.0, 0.0, 0.0 );
+		plane[ 1 ] = vec3( 0.0, 1.0, 0.0 );
+		plane[ 2 ] = vec3( 0.0, 0.0, 1.0 );
+		plane[ 3 ] = vec3( -1.0, 0.0, 0.0 );
+		plane[ 4 ] = vec3( 0.0, -1.0, 0.0 );
+		plane[ 5 ] = vec3( 0.0, 0.0, -1.0 );
+		
+		res = vec2( -2.0, 2.0 ); // max distance is diagonal (=2.0*sqrt(3.0)~=3.4642)
+		vec3 p0 = o, p1 = p0 + d;
+		
+		for( int i = 0; i < 6; i++ )
+		{
+			float angle_ray_plane_normal = dot( plane[ i ], p1 - p0 );
+			if( angle_ray_plane_normal > 0.0 )
+				// ray is leaving through this plane
+				res[ 1 ] = min( res[ 1 ], dot( plane[ i ], plane[ i ] - p0 ) / angle_ray_plane_normal );
+			else if( angle_ray_plane_normal < 0.0 )
+				// ray is entering through this plane
+				res[ 0 ] = max( res[ 0 ], dot( plane[ i ], plane[ i ] - p0 ) / angle_ray_plane_normal );
+		}
+	}
+	else
+	{
+		res = vec2( 0.0 );
+		discard;
+	}
+	return res / l;
+}
+
+void optimize_rays()
+{
+	float best_start = -dot( clipping_space_eye, clipping_space_dir ) / dot( clipping_space_dir, clipping_space_dir );
+	float scale = 2.0 * length( surface_space_dir );
+	
+	ese_opt = eye_space_eye + best_start * eye_space_dir;
+	esd_opt = eye_space_dir / scale;
+	
+	cse_opt = clipping_space_eye + best_start * clipping_space_dir;
+	csd_opt = clipping_space_dir / scale;
+	
+	sse_opt = surface_space_eye + best_start * surface_space_dir;
+	ssd_opt = surface_space_dir / scale;
+	
+	epsilon = epsilon / length( esd_opt );
+}
+
+#ifdef METHOD_DESCARTES
+/**
+ * transform rays in a way that afterwards the interval (-1,1)
+ * can be used for descartes method
+ */
+void normalize_interval( vec2 trace_interval )
+{
+	float ti_length = trace_interval[ 1 ] - trace_interval[ 0 ];
+	float shift = 0.5 * ( trace_interval[ 1 ] + trace_interval[ 0 ] );
+	float scale = 0.5 * ti_length;
+	
+	ese_opt = ese_opt + shift * esd_opt;
+	esd_opt = esd_opt * scale;
+	
+	cse_opt = cse_opt + shift * csd_opt;
+	csd_opt = csd_opt * scale;
+	
+	sse_opt = sse_opt + shift * ssd_opt;
+	ssd_opt = ssd_opt * scale;
+}
+#endif
+
+/**
+ * main method, that guides the overall process
+ */
+void main( void )
+{
+	optimize_rays();
+	
+	// we will only look for roots in this interval
+	vec2 trace_interval = clip( cse_opt, csd_opt );
+
+#ifdef METHOD_DESCARTES
+	normalize_interval( trace_interval );
+	trace_interval = vec2( -1.0, 1.0 );
+#endif
+	
+	// holds coefficients of univariate polynomial f( eye + t * dir )
+	polynomial p = calc_coefficients( sse_opt, ssd_opt, trace_interval );
+	
+	// solve equation sum_{i=0}^DEGREE a[ i ] * x^i = 0
+	roots r = solve( p, trace_interval );
+	gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+	gl_FragDepth = 0.5;
+	
+	// now we can further process the pixel, i.e. illuminate it, calculate it's depth value ...
+	process( r, ese_opt,esd_opt );
+}

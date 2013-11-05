@@ -1,0 +1,17 @@
+# Microsoft Developer Studio Generated Dependency File, included by mathglpp.mak
+
+"src\libmathglpp\GLBernsteinPolynomial.cpp" : \
+	".\src\libmathglpp\GLBernsteinPolynomial.h"\
+	"C:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+"src\libmathglpp\GLMatrix.cpp" : \
+	".\src\libmathglpp\GLMatrix.h"\
+	".\src\libmathglpp\GLVector.h"\
+	"C:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	
+
+"src\libmathglpp\GLVector.cpp" : \
+	".\src\libmathglpp\GLVector.h"\
+	"C:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	

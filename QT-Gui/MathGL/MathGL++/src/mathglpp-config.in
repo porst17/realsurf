@@ -1,0 +1,28 @@
+#!/bin/sh
+
+
+if test $# -eq 0; then
+    echo "Usage $0 [--version] [--prefix] [--libs] [--cxxflags] [--includes]"
+    exit 0
+fi
+
+while test $# -gt 0; do
+    case $1 in
+        --version)
+        echo @VERSION@
+        ;;
+        --prefix)
+        echo @prefix@
+        ;;
+        --libs)
+        echo @GL_LIBS@ @GLU_LIBS@ -lmathglpp -L@prefix@/lib
+        ;;
+        --cxxflags)
+        echo @CXXFLAGS@
+        ;;
+        --includes)
+        echo -I@prefix@/include/MathGL++
+        ;;
+    esac
+    shift
+done
