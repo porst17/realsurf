@@ -1,11 +1,11 @@
 # RealSurf
 
-RealSurf is a GPU-based realtime raytracer for real algebraic surfaces, the
-solutions of polynomial equations `F(x,y,z) = 0` in three variables. It supports
-interactive positioning, rotation, and zooming of surfaces, as well as live
-adjustment of surface parameters.
+A GPU-based realtime raytracer for real algebraic surfaces, the solutions of
+polynomial equations `F(x,y,z) = 0` in three variables. It supports interactive
+positioning, rotation, and zooming of surfaces, as well as live adjustment of
+surface parameters.
 
-![RealSurf](docs/RealSurf.png)
+![Raytraced algebraic surface](docs/RealSurf.png)
 
 ## Project layout
 
@@ -17,6 +17,6 @@ adjustment of surface parameters.
 
 ## License
 
-RealSurf is released under the [Apache License 2.0](LICENSE).
+Licensed under the [Apache License 2.0](LICENSE).
 
 Copyright (C) Christian Stussak.
